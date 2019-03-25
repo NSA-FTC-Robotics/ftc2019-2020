@@ -27,6 +27,7 @@ public class Engine_Tester extends Move_Engine {
         /** Wait for the game to begin */
         Standby();
         Sample();
+        Land();
 
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
