@@ -12,9 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Jack's Super Secret Test Code", group="Iterative Opmode")
-//@Disabled
-public class D1 extends OpMode
-{
+@Disabled
+public class D1 extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeft;
@@ -39,12 +38,12 @@ public class D1 extends OpMode
        /* Initialize the hardware variables. Note that the strings used here as parameters
         to 'get' must correspond to the names assigned during the robot configuration
         step (using the FTC Robot Controller app on the phone). */
-        frontLeft  = hardwareMap.get(DcMotor.class, "front_left");
+        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
         backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         winchMotor = hardwareMap.get(DcMotor.class, "winch_motor");
-        liftingArm = hardwareMap.get(DcMotor.class,"lifter_motor");
+        liftingArm = hardwareMap.get(DcMotor.class, "lifter_motor");
         armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
         spinMotor = hardwareMap.get(DcMotor.class, "spin_motor");
         servo5 = hardwareMap.get(Servo.class, "servo5");
@@ -57,17 +56,18 @@ public class D1 extends OpMode
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.FORWARD);
-        winchMotor.setDirection(DcMotor.Direction.FORWARD);telemetry.addData("Status", "Initialized");
+        winchMotor.setDirection(DcMotor.Direction.FORWARD);
+        telemetry.addData("Status", "Initialized");
 
        /* Initialize the hardware variables. Note that the strings used here as parameters
         to 'get' must correspond to the names assigned during the robot configuration
         step (using the FTC Robot Controller app on the phone). */
-        frontLeft  = hardwareMap.get(DcMotor.class, "front_left");
+        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
         backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         winchMotor = hardwareMap.get(DcMotor.class, "winch_motor");
-        liftingArm = hardwareMap.get(DcMotor.class,"lifter_motor");
+        liftingArm = hardwareMap.get(DcMotor.class, "lifter_motor");
         armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
         spinMotor = hardwareMap.get(DcMotor.class, "spin_motor");
         servo5 = hardwareMap.get(Servo.class, "servo5");
@@ -83,11 +83,10 @@ public class D1 extends OpMode
         winchMotor.setDirection(DcMotor.Direction.FORWARD);
         liftingArm.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setDirection(DcMotor.Direction.FORWARD);
-        spinMotor.setDirection(DcMotor.Direction.REVERSE)
+        spinMotor.setDirection(DcMotor.Direction.REVERSE);
         liftingArm.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setDirection(DcMotor.Direction.FORWARD);
         spinMotor.setDirection(DcMotor.Direction.REVERSE);
-
 
 
         // Tell the driver that initialization is complete.
@@ -107,15 +106,15 @@ public class D1 extends OpMode
     public void loop() {
         // Wheel motor power values. Right motor direction is reversed.
 
-        double backleftWheelPower = ((gamepad1.left_stick_y + gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener;
-        double frontrightWheelPower = ((gamepad1.left_stick_y - gamepad1.left_stick_x) + (gamepad1.right_stick_x))* dampener;
-        double frontleftWheelPower = ((gamepad1.left_stick_y - gamepad1.left_stick_x) - (gamepad1.right_stick_x))* dampener;
-        double backrightWheelPower = ((gamepad1.left_stick_y + gamepad1.left_stick_x) + (gamepad1.right_stick_x))* dampener;
+        double backleftWheelPower = ((gamepad1.left_stick_y + gamepad1.left_stick_x) - (gamepad1.right_stick_x)) * dampener;
+        double frontrightWheelPower = ((gamepad1.left_stick_y - gamepad1.left_stick_x) + (gamepad1.right_stick_x)) * dampener;
+        double frontleftWheelPower = ((gamepad1.left_stick_y - gamepad1.left_stick_x) - (gamepad1.right_stick_x)) * dampener;
+        double backrightWheelPower = ((gamepad1.left_stick_y + gamepad1.left_stick_x) + (gamepad1.right_stick_x)) * dampener;
         double lifter;
-        double dampener = (1- gamepad1.left_trigger);
-        if(gamepad1.dpad_down) lifter = -1;
+        double dampener = (1 - gamepad1.left_trigger);
+        if (gamepad1.dpad_down) lifter = -1;
         else if (gamepad1.dpad_up) lifter = 1;
-        else  lifter = 0;
+        else lifter = 0;
 
         boolean spinnerButton = gamepad1.b;
         boolean reversespinnerButton = gamepad1.x;
@@ -123,7 +122,7 @@ public class D1 extends OpMode
         if (gamepad1.right_bumper) armpower = 0.3;
         else if (gamepad1.left_bumper) armpower = -0.6;
         else armpower = 0;
-        double winchpower = (gamepad1.right_trigger-gamepad1.left_trigger);
+        double winchpower = (gamepad1.right_trigger - gamepad1.left_trigger);
         double dampener2 = gamepad2.right_trigger;
 
 
@@ -132,17 +131,17 @@ public class D1 extends OpMode
 
         //A value that motor power will be divided by to lower it.
         //The more the left trigger is pulled, the greater this value gets so the lower the motor power will be
-        double powerReduction = (gamepad1.left_trigger*1.2) + 1;
+        double powerReduction = (gamepad1.left_trigger * 1.2) + 1;
 
         spinnerPower = 0.0;
-        if(spinnerButton)
+        if (spinnerButton)
             spinnerPower = 0.2;
-        else if(reversespinnerButton)
+        else if (reversespinnerButton)
             spinnerPower = -1;
 
         // clip the input to a certain motors - they only take values [-1,1]
-        frontleftWheelPower = Range.clip((frontleftWheelPower/powerReduction)+(gamepad1.right_trigger*.1), -1, 1);
-        frontrightWheelPower = Range.clip((frontrightWheelPower/powerReduction)+(gamepad1.right_trigger*.1), -1, 1);
+        frontleftWheelPower = Range.clip((frontleftWheelPower / powerReduction) + (gamepad1.right_trigger * .1), -1, 1);
+        frontrightWheelPower = Range.clip((frontrightWheelPower / powerReduction) + (gamepad1.right_trigger * .1), -1, 1);
         //armPower = Range.clip((armPower * .25), -1, 1);
 
         // Send calculated power to all motors
@@ -151,7 +150,7 @@ public class D1 extends OpMode
         backLeft.setPower(+backleftWheelPower);
         backRight.setPower(+backrightWheelPower);
         liftingArm.setPower(lifter);
-        spinMotor.setPower(spinnerPower-dampener2*0.8);
+        spinMotor.setPower(spinnerPower - dampener2 * 0.8);
         armMotor.setPower(armpower);
         winchMotor.setPower(winchpower);
 
@@ -160,21 +159,16 @@ public class D1 extends OpMode
        servo5.setPosition((gamepad2.right_stick_x * -150) + 90);
        */
 
-        if (gamepad1.a)
-        {
+        if (gamepad1.a) {
             servo6.setPosition(0.4);
             servo5.setPosition(0.6);
-        }
-        else if (gamepad1.y)
-        {
+        } else if (gamepad1.y) {
 
 
             servo6.setPosition(0.55);
             servo5.setPosition(0.45);
 
-        }
-        else
-        {
+        } else {
             servo6.setPosition(0.04);
             servo5.setPosition(0.96);
         }
@@ -196,7 +190,8 @@ public class D1 extends OpMode
      * Code to run ONCE after the driver hits STOP
      */
     @Override
-    public void stop() { }
+    public void stop() {
+    }
 
 
 

@@ -9,7 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+@TeleOp(name="Jack's Super Secret Test Code", group="Iterative Opmode")
+//@Disabled
 public class Lecutus_DC extends OpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
