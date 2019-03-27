@@ -57,7 +57,33 @@ public class D1 extends OpMode
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.FORWARD);
+        winchMotor.setDirection(DcMotor.Direction.FORWARD);telemetry.addData("Status", "Initialized");
+
+       /* Initialize the hardware variables. Note that the strings used here as parameters
+        to 'get' must correspond to the names assigned during the robot configuration
+        step (using the FTC Robot Controller app on the phone). */
+        frontLeft  = hardwareMap.get(DcMotor.class, "front_left");
+        frontRight = hardwareMap.get(DcMotor.class, "front_right");
+        backLeft = hardwareMap.get(DcMotor.class, "back_left");
+        backRight = hardwareMap.get(DcMotor.class, "back_right");
+        winchMotor = hardwareMap.get(DcMotor.class, "winch_motor");
+        liftingArm = hardwareMap.get(DcMotor.class,"lifter_motor");
+        armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
+        spinMotor = hardwareMap.get(DcMotor.class, "spin_motor");
+        servo5 = hardwareMap.get(Servo.class, "servo5");
+        servo6 = hardwareMap.get(Servo.class, "servo6");
+
+
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
         winchMotor.setDirection(DcMotor.Direction.FORWARD);
+        liftingArm.setDirection(DcMotor.Direction.FORWARD);
+        armMotor.setDirection(DcMotor.Direction.FORWARD);
+        spinMotor.setDirection(DcMotor.Direction.REVERSE)
         liftingArm.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setDirection(DcMotor.Direction.FORWARD);
         spinMotor.setDirection(DcMotor.Direction.REVERSE);
