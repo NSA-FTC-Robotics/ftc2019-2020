@@ -16,7 +16,8 @@ public class Engine_Tester extends Move_Engine {
     public void runOpMode() {
 
         setConfig();
-        servo4.setPosition(1);
+        leftcollector.setPosition(1);
+        rightcollector.setPosition(0);
         initVuforia();
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -26,8 +27,17 @@ public class Engine_Tester extends Move_Engine {
 
         /** Wait for the game to begin */
         Standby();
-        Sample();
-        Land();
+        //Sample();
+        //Land();
+        Forward(3000,1);
+        dontMove(500);
+        rightAngleTurn("LEFT");
+        strafeRight(3000,1);
+        dontMove(1000);
+        spinSpinner(1500, 0.5);
+        spinSpinner(1500, 0.5);
+
+
 
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */

@@ -26,52 +26,63 @@ public abstract class Move_Engine extends LinearOpMode {
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
-    public DcMotor winchMotor;
-    public DcMotor liftingArm;
-    public DcMotor armMotor;
-    public DcMotor spinMotor;
-    public Servo servo5;
-    public Servo servo6;
-    public Servo servo4;
+    public DcMotor slide;
+    public DcMotor actuator;
+    public DcMotor extender;
+    public DcMotor spinner;
+    public Servo leftcollector;
+    public Servo rightcollector;
+    public Servo scorer;
+    int inCrater = 0;
     public static final String VUFORIA_KEY = " AQ116pH/////AAABmYKZkP6ruU4ukxsm+1osPgFEdpQlf84kCDF5xhQQR5sUCugeVkoDJNSxZMmVG4iI/ZgvMc93IktiBsRMg2r0bdh1o/t5tOkiiSl+mdsccx1SES40H4FEoIf/D1n5qhQLpT+W656H1Ffe16Hbb86/FC2mJDAes22Ddq7fEeGSTzvFXAjrMnCwZSK90opojAxPitQxTFgjaXz+ZYPfcn7ciJ8DReEBuhcqdiVs54N0Szf0b0fdO5Wo201+rWhI9UVjOli7shY3vQyokxnhjPzVROsYmuKe05llHFPNpuVkWJiEPTBSwPqTQ40mwdX0RV5ortDPcG62bYx3v8hZY/dUVMWjFzdPr+sHJK1Cp2KAbbXj";
     public VuforiaLocalizer vuforia;
     public TFObjectDetector tfod;
-
-    public Move_Engine(){}
-
+    public Move_Engine(){/* Useless Constructor*/}
     public void setConfig(){
-        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
+        frontLeft  = hardwareMap.get(DcMotor.class, "front_left");
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
-        backLeft = hardwareMap.get(DcMotor.class, "back_left");
-        backRight = hardwareMap.get(DcMotor.class, "back_right");
-        winchMotor = hardwareMap.get(DcMotor.class, "winch_motor");
-        armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
-        liftingArm = hardwareMap.get(DcMotor.class, "lifter_motor");
-        spinMotor = hardwareMap.get(DcMotor.class, "spin_motor");
-        servo5 = hardwareMap.get(Servo.class, "servo5");
-        servo6 = hardwareMap.get(Servo.class, "servo6");
-        servo4 = hardwareMap.get(Servo.class, "servo4");
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
+
+        backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backLeft.setDirection(DcMotor.Direction.FORWARD);
+
+        backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
-        winchMotor.setDirection(DcMotor.Direction.FORWARD);
-        liftingArm.setDirection(DcMotor.Direction.FORWARD);
-        spinMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        slide = hardwareMap.get(DcMotor.class, "slide");
+        slide.setDirection(DcMotor.Direction.FORWARD);
+
+        actuator = hardwareMap.get(DcMotor.class, "actuator");
+        actuator.setDirection(DcMotor.Direction.FORWARD);
+
+        extender = hardwareMap.get(DcMotor.class, "extender");
+        extender.setDirection(DcMotor.Direction.REVERSE);
+
+        scorer = hardwareMap.get(Servo.class, "scorer");
+        scorer.setPosition(0.1);
+
+        leftcollector = hardwareMap.get(Servo.class, "leftcollector");
+        leftcollector.setPosition(1);
+
+        rightcollector= hardwareMap.get(Servo.class, "rightcollector");
+        rightcollector.setPosition(0);
+
+        spinner = hardwareMap.get(DcMotor.class, "spinner");
+        spinner.setDirection(DcMotor.Direction.FORWARD);
     }
     public void Standby(){
         while (!isStarted()) {
-            telemetry.addData("Garamond:", " Waiting for Start.");
+            telemetry.addData("Lecutus" + ":", " Waiting for Start.");
             telemetry.update();
             sleep(1000);
             telemetry.clear();
-            telemetry.addData("Garamond:", " Waiting for Start..");
+            telemetry.addData("Lecutus" + ":", " Waiting for Start..");
             telemetry.update();
             sleep(1000);
             telemetry.clear();
-            telemetry.addData("Garamond:", " Waiting for Start...");
+            telemetry.addData("Lecutus" + ":", " Waiting for Start...");
             telemetry.update();
             sleep(1000);
             telemetry.clear();
@@ -97,67 +108,159 @@ public abstract class Move_Engine extends LinearOpMode {
         frontRight.setPower(0);
         backRight.setPower(0);
     }
-
     /** One of two strafe methods, this one strafes left
      *
-     * @param time The time (in milliseconds) the motors runs for.
+     * @param rot The number of rotations the motors move.
      * @param pow The percent power (as a decimal) the drive motors run at.
      */
-    public void strafeLeft(int time, double pow){
-        frontLeft.setPower(-1 * pow);
-        backLeft.setPower(1 * pow);
-        frontRight.setPower(-1 * pow);
-        backRight.setPower(1 * pow);
-        sleep(time);
-    }
+    public void strafeLeft(int rot, double pow){
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        frontLeft.setTargetPosition(-1120 * rot);
+        frontRight.setTargetPosition(1120 * rot);
+        backLeft.setTargetPosition(1120 * rot);
+        backRight.setTargetPosition(-1120 * rot);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeft.setPower(-1 * pow);
+        frontRight.setPower(1 * pow);
+        backLeft.setPower(1 * pow);
+        backRight.setPower(-1 * pow);
+
+        while(frontLeft.isBusy()&&frontRight.isBusy()&&backRight.isBusy()&&backLeft.isBusy())
+        {
+
+        }
+        dontMove();
+        //sleep(time);
+    }
     /** One of two strafe methods, this one strafes right
      *
-     * @param time The time (in milliseconds) the motors runs for.
+     * @param rot The time (in milliseconds) the motors runs for.
      * @param pow The percent power (as a decimal) the drive motors run at.
      */
-    public void strafeRight(int time, double pow){
-        frontLeft.setPower(1 * pow);
-        backLeft.setPower(-1 * pow);
-        frontRight.setPower(1 * pow);
-        backRight.setPower(-1 * pow);
-        sleep(time);
-    }
+    public void strafeRight(int rot, double pow){
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-    /** The Forward method drives Garamond...forward.
+        frontLeft.setTargetPosition(1120*rot);
+        frontRight.setTargetPosition(-1120*rot);
+        backLeft.setTargetPosition(-1120*rot);
+        backRight.setTargetPosition(1120*rot);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeft.setPower(1 * pow);
+        frontRight.setPower(-1 * pow);
+        backLeft.setPower(-1 * pow);
+        backRight.setPower(1 * pow);
+
+        while(frontLeft.isBusy()&&frontRight.isBusy()&&backRight.isBusy()&&backLeft.isBusy())
+        {
+
+        }
+
+            frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+
+
+
+
+
+    }
+    /** The Forward method drives Lecutus ...forward.
      * @param time The time in milliseconds to drive for.
      * @param pow The percent power (as a decimal) the drive motors run at.
      */
     public void Forward(int time,double pow){
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setTargetPosition(1120);
+        frontRight.setTargetPosition(1120);
+        backLeft.setTargetPosition(1120);
+        backRight.setTargetPosition(1120);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         frontLeft.setPower(1 * pow);
+        frontRight.setPower(1 * pow);
+        backLeft.setPower(1 * pow);
+        backRight.setPower(1 * pow);
+
+        while(frontLeft.isBusy());
+        {
+
+        }
         backLeft.setPower(1 * pow);
         frontRight.setPower(1 * pow);
         backRight.setPower(1 * pow);
         sleep(time);
     }
-    /** The Backward method drives Garamond backwards (surprise surprise..)
+    /** The Backward method drives Lecutus
+      backwards (surprise surprise..)
      * @param time The time in milliseconds to drive for.
      * @param pow The percent power (as a decimal) the drive motors run at.
      */
     public void Backward(int time,double pow){
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setTargetPosition(-1120);
+        frontRight.setTargetPosition(-1120);
+        backLeft.setTargetPosition(-1120);
+        backRight.setTargetPosition(-1120);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         frontLeft.setPower(-1 * pow);
+        frontRight.setPower(-1 * pow);
+        backLeft.setPower(-1 * pow);
+        backRight.setPower(-1 * pow);
+
+        while(frontLeft.isBusy());
         backLeft.setPower(-1 * pow);
         frontRight.setPower(-1 * pow);
         backRight.setPower(-1 * pow);
         sleep(time);
     }
     /** rightAngleTurn is a method that turns right or left.
-     * @param direction  Turns Garamond Left or Right based on the String given ("L" or "R").
+     * @param direction  Turns Lecutus Left or Right based on the String given ("L" or "R").
      */
     public void rightAngleTurn(String direction)
     {
-        if(direction.startsWith("R")){
+        direction.toLowerCase();
+        if(direction.startsWith("r")){
             frontLeft.setPower(-1);
             backLeft.setPower(1);
             frontRight.setPower(1);
             backRight.setPower(-1);
             sleep(450);
-        } else if(direction.startsWith("L")){
+        } else if(direction.startsWith("l")){
             frontLeft.setPower(-1);
             backLeft.setPower(-1);
             frontRight.setPower(1);
@@ -165,29 +268,25 @@ public abstract class Move_Engine extends LinearOpMode {
             sleep(600);
         } else telemetry.addLine("lmao who wrote this it doesn't work");
     }
-
-    /** The moveArm Method controls the movement of Garamond's collector arm.
+    /** The moveArm Method controls the movement of Lecutus's collector arm.
      * @param pow The power to set the motor to.
      * @param sec The time (in milliseconds) the motor runs for.
      */
     public void moveArm(double pow, int sec){
-        armMotor.setPower(pow * 0.5);
-        sleep(sec);
-        armMotor.setPower(0);
-        dontMove();
+
     }
     /**
-     * Method to Lower Garamond from the Lander.
+     * Method to Lower Lecutus from the Lander.
      */
     public void Land() {
 
-        liftingArm.setPower(-1);
+        actuator.setPower(-1);
         frontLeft.setPower(-0.2);
         backLeft.setPower(0.2);
         frontRight.setPower(-0.2);
         backRight.setPower(0.2);
         sleep(3500);
-        liftingArm.setPower(0);
+        actuator.setPower(0);
         frontLeft.setPower(0);
         backLeft.setPower(0);
         frontRight.setPower(0);
@@ -208,13 +307,11 @@ public abstract class Move_Engine extends LinearOpMode {
         sleep(1650);
 
     }
-
     public void spinSpinner(int time, double pow){
-        spinMotor.setPower(pow);
+        spinner.setPower(pow);
         sleep(time);
-        spinMotor.setPower(0);
+        spinner.setPower(0);
     }
-
     public void Sample(){
         boolean found = false;
         int pos = 0;
@@ -271,7 +368,7 @@ public abstract class Move_Engine extends LinearOpMode {
         }
         if (pos ==3) //Right
         {
-            servo4.setPosition(0.5);
+            //servo4.setPosition(0.5);
             Land();
             strafeRight(1500, 1);
             Forward(800, 0.5);
@@ -292,8 +389,6 @@ public abstract class Move_Engine extends LinearOpMode {
             Backward(500,0.5);
         }
     }
-
-
     /**
      * Initialize the Vuforia localization engine.
      */
@@ -311,7 +406,6 @@ public abstract class Move_Engine extends LinearOpMode {
 
         // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
     }
-
     /**
      * Initialize the Tensor Flow Object Detection engine.
      */
@@ -323,4 +417,3 @@ public abstract class Move_Engine extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 }
-

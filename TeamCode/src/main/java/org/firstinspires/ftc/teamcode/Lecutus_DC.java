@@ -114,8 +114,8 @@ public class Lecutus_DC extends OpMode
 
         if(gamepad2.dpad_up) //transfer
         {
-            leftcollector.setPosition(.2);
-            rightcollector.setPosition(.8);
+            leftcollector.setPosition(.1);
+            rightcollector.setPosition(.9);
         }
         if(gamepad2.dpad_right||gamepad2.dpad_left) //up
         {
