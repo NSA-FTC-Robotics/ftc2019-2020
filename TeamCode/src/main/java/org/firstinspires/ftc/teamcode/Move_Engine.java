@@ -114,6 +114,7 @@ public abstract class Move_Engine extends LinearOpMode {
         backLeft.setPower(1 * pow);
         backRight.setPower(-1 * pow);
         sleep(time);
+        dontMove();
     }
     /** One of two strafe methods, this one strafes right
      *
