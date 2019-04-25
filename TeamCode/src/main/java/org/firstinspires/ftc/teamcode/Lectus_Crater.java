@@ -74,6 +74,7 @@ public class Lectus_Crater extends Move_Engine {
             Sample();
             extendArm(2000);
             collectDown();
+            extender.setPower(0.05);
 
             if (tfod != null) {
                 tfod.shutdown();
