@@ -56,7 +56,7 @@ public abstract class Move_Engine extends LinearOpMode {
         extender.setDirection(DcMotor.Direction.REVERSE);
 
         scorer = hardwareMap.get(Servo.class, "scorer");
-        scorer.setPosition(0.5);
+        scorer.setPosition(0.35);
 
         leftcollector = hardwareMap.get(Servo.class, "leftcollector");
         leftcollector.setPosition(0);

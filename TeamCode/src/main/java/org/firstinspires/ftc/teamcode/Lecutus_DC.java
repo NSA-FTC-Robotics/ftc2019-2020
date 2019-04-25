@@ -151,7 +151,7 @@ public class Lecutus_DC extends OpMode
 
         if(gamepad1.a) scorer.setPosition(0.5);
         else if (gamepad1.b)scorer.setPosition(0.35);
-        else scorer.setPosition(0.1);
+        else scorer.setPosition(0.15);
     }
     @Override
     public void stop() { }

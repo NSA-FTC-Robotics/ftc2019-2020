@@ -38,12 +38,8 @@ public class Lecutus_Depot extends Move_Engine {
                 tfod.activate();
             }
 
-            //Sample();
-            Land();
-            Forward(1000,1);
-            dontMove();
-            collectDown();
-            spinSpinner(2000, 1);
+            Sample();
+
 
 
             if (tfod != null) {
