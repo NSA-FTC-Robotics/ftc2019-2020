@@ -106,7 +106,10 @@ public class Lecutus_DC extends OpMode
 
         }
         else actuator.setPower(0);
-        slide.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
+
+        if(gamepad1.left_trigger-gamepad1.right_trigger<0)
+        slide.setPower((gamepad1.left_trigger-gamepad1.right_trigger)*0.6);
+        else slide.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
         if (gamepad2.right_stick_y>0)
             extender.setPower(0.6 *gamepad2.right_stick_y);
         else extender.setPower(gamepad2.right_stick_y);
@@ -127,7 +130,7 @@ public class Lecutus_DC extends OpMode
             leftcollector.setPosition(1);
             rightcollector.setPosition(0);
         }
-        slide.getZeroPowerBehavior();
+
 
         if(gamepad2.right_bumper)
             spinner.setPower(1);
