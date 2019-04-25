@@ -300,7 +300,8 @@ public abstract class Move_Engine extends LinearOpMode {
         {
             Land();
             strafeRight(400, 0.5);
-            Turn(260,1);
+            Turn(220,1);
+            Forward(300,0.5);
             collectDown();
             spinSpinner(2000, -1);
             Forward(500,0.6);
@@ -322,12 +323,13 @@ public abstract class Move_Engine extends LinearOpMode {
         {
             Land();
             strafeRight(400, 0.5);
-            Turn(260,-1);
+            Turn(220,-1);
             collectDown();
             spinSpinner(2000, -1);
             Forward(500,0.6);
             collectUp();
             Turn(300,1);
+            Forward(300,0.5);
             dontMove();
         }
         return pos;
