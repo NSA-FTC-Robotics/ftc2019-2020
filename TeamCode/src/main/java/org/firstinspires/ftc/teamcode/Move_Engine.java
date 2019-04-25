@@ -71,15 +71,15 @@ public abstract class Move_Engine extends LinearOpMode {
         while (!isStarted()) {
             telemetry.addData("Lecutus" + ":", " Waiting for Start.");
             telemetry.update();
-            sleep(1000);
+            sleep(800);
             telemetry.clear();
             telemetry.addData("Lecutus" + ":", " Waiting for Start..");
             telemetry.update();
-            sleep(1000);
+            sleep(800);
             telemetry.clear();
             telemetry.addData("Lecutus" + ":", " Waiting for Start...");
             telemetry.update();
-            sleep(1000);
+            sleep(800);
             telemetry.clear();
         }
     }
@@ -150,6 +150,7 @@ public abstract class Move_Engine extends LinearOpMode {
         frontRight.setPower(-1 * pow);
         backRight.setPower(-1 * pow);
         sleep(time);
+        dontMove();
     }
     /** rightAngleTurn is a method that turns right or left.
      * @param direction  Turns Lecutus Left or Right based on the String given ("L" or "R").
@@ -171,7 +172,6 @@ public abstract class Move_Engine extends LinearOpMode {
             sleep(200);
         } else telemetry.addLine("lmao who wrote this it doesn't work");
     }
-
     /**Turn method
      *
      * @param time time to turn
@@ -189,13 +189,13 @@ public abstract class Move_Engine extends LinearOpMode {
      * @param sec The time (in milliseconds) the motor runs for.
      */
     public void extendArm(int sec){
-        extender.setPower(0.6);
+        extender.setPower(-0.6);
         sleep(sec);
         extender.setPower(0);
     }
     public void retractArm(int sec)
     {
-        extender.setPower(-0.6);
+        extender.setPower(0.6);
         sleep(sec);
         extender.setPower(0);
     }
@@ -221,7 +221,7 @@ public abstract class Move_Engine extends LinearOpMode {
         dontMove();
         Forward(400, 0.3);
         strafeRight(1000,0.5);
-        Turn(520,1);
+        Turn(530,1);
 
     }
     public void TurnAround()
@@ -239,7 +239,7 @@ public abstract class Move_Engine extends LinearOpMode {
         sleep(time);
         spinner.setPower(0);
     }
-    public void Sample(){
+    public int Sample(){
         boolean found = false;
         int pos = 0;
         while (opModeIsActive()&& !found) {
@@ -278,7 +278,7 @@ public abstract class Move_Engine extends LinearOpMode {
                             found = true;
                             pos = 1;
                         }
-                        else if (goldMineralX > silverMineral1X )
+                        else if (goldMineralX < silverMineral1X )
                         {
                             telemetry.addData("Gold Mineral Position", "Center");
                             found = true;
@@ -295,34 +295,41 @@ public abstract class Move_Engine extends LinearOpMode {
                 }
             }
         }
-        if (pos ==3) //Right
+        if (pos == 3) //Right
         {
             Land();
+            strafeRight(400, 0.5);
             Turn(260,1);
             collectDown();
-            Forward(1000,0.6);
+            spinSpinner(2000, -1);
+            Forward(500,0.6);
             collectUp();
             Turn(300,-1);
             dontMove();
         }
-        if (pos ==2) //Center
+        if (pos == 2) //Center
         {
             Land();
+            strafeRight(400, 0.5);
             collectDown();
-            Forward(1000,0.6);
+            spinSpinner(2000, -1);
+            Forward(500,0.6);
             collectUp();
+
         }
-        if (pos ==1) //Left
+        if (pos == 1) //Left
         {
             Land();
+            strafeRight(400, 0.5);
             Turn(260,-1);
             collectDown();
-            Forward(1000,0.6);
+            spinSpinner(2000, -1);
+            Forward(500,0.6);
             collectUp();
             Turn(300,1);
             dontMove();
         }
-
+        return pos;
     }
     /**
      * Initialize the Vuforia localization engine.
@@ -335,7 +342,6 @@ public abstract class Move_Engine extends LinearOpMode {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = CameraDirection.BACK;
-
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 

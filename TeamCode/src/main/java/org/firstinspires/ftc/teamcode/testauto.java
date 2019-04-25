@@ -12,11 +12,6 @@ public class testauto extends Move_Engine {
         telemetry.update();
 
         Standby();
-        Turn(260,1);
-        collectDown();
-        extendArm(4000);
-        collectUp();
-        Turn(260,-1);
-        dontMove();
+        Sample();
     }
 }
