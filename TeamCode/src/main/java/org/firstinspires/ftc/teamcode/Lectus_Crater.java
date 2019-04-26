@@ -66,6 +66,7 @@ public class Lectus_Crater extends Move_Engine {
         initVuforia();
         initTfod();
         Standby();
+
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
             if (tfod != null) {

@@ -128,6 +128,7 @@ public abstract class Move_Engine extends LinearOpMode {
         backLeft.setPower(-1 * pow);
         backRight.setPower(1 * pow);
         sleep(time);
+        dontMove();
     }
     /** The Forward method drives Lecutus ...forward.
      * @param time The time in milliseconds to drive for.
@@ -139,6 +140,7 @@ public abstract class Move_Engine extends LinearOpMode {
         frontRight.setPower(1 * pow);
         backRight.setPower(1 * pow);
         sleep(time);
+        dontMove();
     }
     /** The Backward method drives Lecutus
       backwards (surprise surprise..)
@@ -165,12 +167,14 @@ public abstract class Move_Engine extends LinearOpMode {
             frontRight.setPower(-1);
             backRight.setPower(-1);
             sleep(520);
+            dontMove();
         } else if(direction.startsWith("r")){
             frontLeft.setPower(-1);
             backLeft.setPower(-1);
             frontRight.setPower(1);
             backRight.setPower(1);
             sleep(200);
+            dontMove();
         } else telemetry.addLine("lmao who wrote this it doesn't work");
     }
     /**Turn method
@@ -223,6 +227,7 @@ public abstract class Move_Engine extends LinearOpMode {
         Forward(400, 0.3);
         strafeRight(1000,0.5);
         Turn(530,1);
+        strafeRight(400, 0.5);
 
     }
     public void TurnAround()
@@ -323,6 +328,97 @@ public abstract class Move_Engine extends LinearOpMode {
         {
             Land();
             strafeRight(400, 0.5);
+            Turn(220,-1);
+            collectDown();
+            spinSpinner(2000, -1);
+            Forward(500,0.6);
+            collectUp();
+            Turn(300,1);
+            Forward(300,0.5);
+            dontMove();
+        }
+        return pos;
+    }
+    public int testSample(){
+        boolean found = false;
+        int pos = 0;
+        while (opModeIsActive()&& !found) {
+            if (tfod != null) {
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    telemetry.addData("# Object Detected", updatedRecognitions.size());
+                    if (updatedRecognitions.size() == 2)
+                    {
+                        int goldMineralX = -1;
+                        int silverMineral1X = -1;
+                        int silverMineral2X = -1;
+                        for (Recognition recognition : updatedRecognitions)
+                        {
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL))
+                            {
+                                goldMineralX = (int) recognition.getLeft();
+                            }
+                            else if (silverMineral1X == -1)
+                            {
+                                silverMineral1X = (int) recognition.getLeft();
+                            }
+                            else
+                            {
+                                silverMineral2X = (int) recognition.getLeft();
+                            }
+                        }
+
+                        if (goldMineralX == -1)
+                        {
+
+
+                            telemetry.addData("Gold Mineral Position", "Left");
+                            found = true;
+                            pos = 1;
+                        }
+                        else if (goldMineralX < silverMineral1X )
+                        {
+                            telemetry.addData("Gold Mineral Position", "Center");
+                            found = true;
+                            pos = 2;
+                        }
+                        else
+                        {
+                            telemetry.addData("Gold Mineral Position", "Right");
+                            found = true;
+                            pos = 3;
+                        }
+                    }
+                    telemetry.update();
+                }
+            }
+        }
+        if (pos == 3) //Right
+        {
+            Land();
+            Turn(220,1);
+            Forward(300,0.5);
+            collectDown();
+            spinSpinner(2000, -1);
+            Forward(500,0.6);
+            collectUp();
+            Turn(300,-1);
+            dontMove();
+        }
+        if (pos == 2) //Center
+        {
+            Land();
+            collectDown();
+            spinSpinner(2000, -1);
+            Forward(500,0.6);
+            collectUp();
+
+        }
+        if (pos == 1) //Left
+        {
+            Land();
             Turn(220,-1);
             collectDown();
             spinSpinner(2000, -1);
