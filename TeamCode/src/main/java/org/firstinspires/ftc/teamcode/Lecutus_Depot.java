@@ -39,7 +39,7 @@ public class Lecutus_Depot extends Move_Engine {
             }
 
             Sample();
-            Backward(1000,0.5);
+            Backward(400,0.5);
 
             if (tfod != null) {
                 tfod.shutdown();
