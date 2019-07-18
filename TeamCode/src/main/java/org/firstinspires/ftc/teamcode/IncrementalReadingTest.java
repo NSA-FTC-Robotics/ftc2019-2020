@@ -87,7 +87,7 @@ public class IncrementalReadingTest extends LinearOpMode
                diffLX = inchLeftX-lastLX;
 
                dX =(diffLX+ diffRX)/2;
-               dY = diffRY  + 16*fieldT/(2*Math.PI);
+               dY = diffRY  + 16*t/(2*Math.PI);
                dT = (diffLX-diffRX)/14.5;
 
 
@@ -105,7 +105,11 @@ public class IncrementalReadingTest extends LinearOpMode
 
                telemetry.addData("x coordinate: ", fieldX);
                telemetry.addData("y coordinate: ", fieldY);
-               telemetry.addData("t coordinate: ", fieldT);
+               telemetry.addData("t coordinate: ", Math.toDegrees(fieldT)  );
+               telemetry.addData("RY:",inchRightY);
+               telemetry.addData("RX:",inchRightX);
+               telemetry.addData("LX:",inchLeftX);
+               telemetry.addData("t:",t);
                telemetry.update();
                telemetry.clear();
 
