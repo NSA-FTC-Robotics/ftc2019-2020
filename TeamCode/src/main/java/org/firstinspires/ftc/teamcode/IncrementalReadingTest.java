@@ -87,7 +87,7 @@ public class IncrementalReadingTest extends LinearOpMode
                diffLX = inchLeftX-lastLX;
 
                dX =(diffLX+ diffRX)/2;
-               dY = diffRY  + 16*t/(2*Math.PI);
+               dY = diffRY  + 16*dT/(2*Math.PI);
                dT = (diffLX-diffRX)/14.5;
 
 
