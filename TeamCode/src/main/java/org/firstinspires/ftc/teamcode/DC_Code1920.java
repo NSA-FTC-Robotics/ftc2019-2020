@@ -18,19 +18,25 @@ public class DC_Code1920 extends OpMode
     private DcMotor backRight;
     double dampener = 1;
 
-    private int pulseLeftX = 0;
-    private int pulseRightX = 0;
-    private int pulseRightY = 0;
-    private double inchLeftX = 0;
-    private double inchRightX = 0;
-    private double inchRightY = 0;
+    private int pulseLeftX ;
+    private int pulseRightX ;
+    private int pulseRightY ;
+    private double inchLeftX;
+    private double inchRightX;
+    private double inchRightY;
     private final double pulseToInch = .0032639031;
-    private double dX = 0;
-    private double dY = 0;
-    private double t = 0;
-    private double x = 0;
-    private double y = 0;
-    private double thatha = 0;
+    double lastRY = 0;
+    double lastRX = 0;
+    double lastLX = 0;
+    double diffRY = 0;
+    double diffRX = 0;
+    double diffLX = 0;
+    double dX = 0;
+    double dY = 0;
+    double dT = 0;
+    private double fieldX = 72;
+    private double fieldY = 72;
+    private double fieldT = 0;
 
     public void init()
     {
@@ -94,33 +100,47 @@ public class DC_Code1920 extends OpMode
             backLeft.setPower(((-gamepad1.left_stick_y - gamepad1.left_stick_x) + (gamepad1.right_stick_x))*dampener);
             backRight.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener);
 
-            pulseLeftX = frontLeft.getCurrentPosition();
-            pulseRightY = frontRight.getCurrentPosition();
-            pulseRightX = backRight.getCurrentPosition();
 
-            inchLeftX = pulseLeftX * pulseToInch * -1;
-            inchRightX = pulseRightX * pulseToInch * -1;
-            inchRightY = pulseRightY * pulseToInch;
-
-            t = (inchLeftX - inchRightX)/14.5;
-            dX = (inchLeftX + inchRightX)/2;
-            dY = inchRightY  + 16*t/(2*Math.PI);
-
-            x = dX * Math.cos(t) - dY * Math.sin(t);
-            y = dX*Math.sin(t) + dY * Math.cos(t);
-            //thatha = t + thatha
-
-            telemetry.addData("Left x: ",  inchLeftX);
-            telemetry.addData("Right y: " , inchRightY);
-            telemetry.addData("Right x: " , inchRightX);
-            telemetry.addData("dTheta: ", t);
-            telemetry.addData("dX: ", dX);
-            telemetry.addData("dY: ", dY);
-            telemetry.addData("x coordinate: ", x);
-            telemetry.addData("y coordinate: ", y);
-            telemetry.update();
-            telemetry.clear();
         }
+        pulseRightY = frontRight.getCurrentPosition();
+        pulseRightX = backRight.getCurrentPosition();
+        pulseLeftX = frontLeft.getCurrentPosition();
+
+        inchRightY = pulseRightY * pulseToInch;
+        inchRightX = pulseRightX * pulseToInch * -1;
+        inchLeftX = pulseLeftX * pulseToInch * -1;
+
+        diffRY = inchRightY-lastRY;
+        diffRX= inchRightX-lastRX;
+        diffLX = inchLeftX-lastLX;
+
+        dX =(diffLX+ diffRX)/2;
+        dY = diffRY  + 16*dT/(2*Math.PI);
+        dT = (diffLX-diffRX)/14.5;
+
+
+        fieldX += (dX * Math.cos(fieldT) - dY * Math.sin(fieldT));
+        fieldY += (dX *Math.sin(fieldT) + dY * Math.cos(fieldT));
+        fieldT += dT;
+
+        lastRY = inchRightY;
+        lastRX = inchRightX;
+        lastLX = inchLeftX;
+
+        if (fieldT >= 2*Math.PI) fieldT -= 2*Math.PI;
+        else if (fieldT<0) fieldT += 2*Math.PI;
+
+
+
+
+
+        telemetry.addData("x coordinate: ", fieldX);
+        telemetry.addData("y coordinate: ", fieldY);
+        telemetry.addData("t coordinate: ", Math.toDegrees(fieldT)  );
+        telemetry.update();
+        telemetry.clear();
+
+
     }
 
     @Override
