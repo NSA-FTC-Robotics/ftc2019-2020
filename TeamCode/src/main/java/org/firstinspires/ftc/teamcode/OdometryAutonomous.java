@@ -146,7 +146,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double num = 15;
        double  t = Math.toDegrees(fieldT);
-        if(Math.abs(t-targetTheta)>5)
+        if(Math.abs(t-targetTheta)>15)
         {
             while (Math.abs(t - targetTheta) > .02) {
                 updateposition();
@@ -220,10 +220,10 @@ public abstract class OdometryAutonomous extends LinearOpMode
     public void driveTo (double targetX, double targetY, double targetTheta, double power) // degrees input
     {
 
-        while(fieldX !=targetX||fieldY!= targetY|| fieldT!=targetTheta)
+        while(fieldX !=targetX &&fieldY!= targetY && fieldT!=targetTheta)
         {
 
-            while(fieldX !=targetX||fieldY!= targetY)
+            while(fieldX !=targetX&&fieldY!= targetY)
             {
 
                 updateposition();
