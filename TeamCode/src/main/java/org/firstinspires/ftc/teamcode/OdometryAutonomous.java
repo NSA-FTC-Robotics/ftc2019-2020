@@ -116,6 +116,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
 
 
+
         telemetry.addData("x coordinate: ", fieldX);
         telemetry.addData("y coordinate: ", fieldY);
         telemetry.addData("t coordinate: ", Math.toDegrees(fieldT)  );
@@ -146,7 +147,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double num = 15;
        double  t = Math.toDegrees(fieldT);
-        if(Math.abs(t-targetTheta)>15)
+        if(Math.abs(t-targetTheta)>1)
         {
             while (Math.abs(t - targetTheta) > .02) {
                 updateposition();
@@ -219,15 +220,24 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void driveTo (double targetX, double targetY, double targetTheta, double power) // degrees input
     {
+        double num = 4;
 
-        while(fieldX !=targetX &&fieldY!= targetY && fieldT!=targetTheta)
+        while(Math.abs(fieldX - targetX) > 1.5 || Math.abs(fieldY - targetY) > 1.5 || Math.abs(fieldT - targetTheta) > 1)
         {
-
-            while(fieldX !=targetX&&fieldY!= targetY)
+            while(Math.abs(fieldX - targetX) > 1.5 || Math.abs(fieldY - targetY) > 1.5)
             {
-
                 updateposition();
-                setTheta(target(targetX, targetY), power);
+
+                if(Math.abs(target(targetX, targetY)-Math.toDegrees(fieldT)) > 15)
+                {
+                    setTheta(target(targetX, targetY), .4);
+                }
+
+                if (Math.abs(fieldX - targetX) < 10 && Math.abs(fieldY - targetY) < 10)
+                {
+                    power = .4;
+                }
+
                 forward(power);
             }
             updateposition();
