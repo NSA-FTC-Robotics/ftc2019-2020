@@ -38,6 +38,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private double fieldX;
     private double fieldY;
     private double fieldT;
+    double flta = 0;
+    double frta = 0;
+    double brta = 0;
+    double blta = 0;
+    double flma = 0;
+    double frma = 0;
+    double brma = 0;
+    double blma = 0;
 
 
     public void setConfig()
@@ -216,33 +224,80 @@ public abstract class OdometryAutonomous extends LinearOpMode
         if (targetTheta >= 2*Math.PI) targetTheta -= 2*Math.PI;
         else if (targetTheta<0) targetTheta += 2*Math.PI;
         targetTheta=Math.toDegrees(targetTheta);
-        return targetTheta;
+        return (targetTheta);
+    }
+    public void alterTheta(double targetTheta)
+    {
+       double p=0.4;
+       if (Math.abs(targetTheta - Math.toDegrees(fieldT))<5)
+           p = 0.2;
+       else if (Math.abs(targetTheta - Math.toDegrees(fieldT))<1.5)
+           p= 0;
+        if ((targetTheta < Math.toDegrees(fieldT)) && (targetTheta <= Math.toDegrees(fieldT) - 180)) {
+            flta = p;
+            frta = -p;
+            blta = p;
+            brta = -p;
+        } else if ((targetTheta < Math.toDegrees(fieldT)) && (targetTheta > Math.toDegrees(fieldT) - 180)) {
+            flta = -p;
+            frta = p;
+            blta = -p;
+            brta = p;
+        } else if ((targetTheta > Math.toDegrees(fieldT)) && (targetTheta <= Math.toDegrees(fieldT) + 180)) {
+            flta = p;
+            frta = -p;
+            blta = p;
+            brta = -p;
+        } else {
+            flta = -p;
+            frta = p;
+            blta = -p;
+            brta = p;
+        }
+    }
+    public void alterTragectory(double direction)
+    {
+        direction = 90 - direction;
+        direction = Math.toRadians(direction);
+        direction = fieldT+direction;
+        double x = Math.cos(direction);
+        double y =  Math.sin(direction);
+
+       flma = y+x ;
+       frma = y-x ;
+       blma = y-x ;
+       brma = y+x ;
     }
     public void driveTo (double targetX, double targetY, double targetTheta, double power) // degrees input
     {
-        double num = 4;
-
-        while(Math.abs(fieldX - targetX) > 1.5 || Math.abs(fieldY - targetY) > 1.5 || Math.abs(fieldT - targetTheta) > 1)
+        //setTheta(target(targetX,targetY),0.4);
+        double distance =0;
+        double da = 1;
+        double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
+        while(Math.abs(fieldX - targetX) > 1.5 || Math.abs(fieldY - targetY) > 1.5 || Math.abs(Math.toDegrees(fieldT)  - targetTheta) > 1)
         {
-            while(Math.abs(fieldX - targetX) > 1.5 || Math.abs(fieldY - targetY) > 1.5)
+            distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
+            while (distance>1.5)
             {
+                distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
+                if(distance<30)da =0.5;
+                if (distance<10) da = 0.3;
+                updateposition();
+                alterTheta(target(targetX, targetY));
+                alterTragectory(target(targetX,targetY));
+                frontLeft.setPower((flma*power*da) +flta*da);
+                frontRight.setPower((frma*power*da)+frta*da);
+                backLeft.setPower((blma*power*da)+blta*da);
+                backRight.setPower((brma*power*da)+brta*da);
+
+
                 updateposition();
 
-                if(Math.abs(target(targetX, targetY)-Math.toDegrees(fieldT)) > 15)
-                {
-                    setTheta(target(targetX, targetY), .4);
-                }
-
-                if (Math.abs(fieldX - targetX) < 10 && Math.abs(fieldY - targetY) < 10)
-                {
-                    power = .4;
-                }
-
-                forward(power);
             }
-            updateposition();
             setTheta(targetTheta,0.4);
+            updateposition();
         }
+
     }
 
 

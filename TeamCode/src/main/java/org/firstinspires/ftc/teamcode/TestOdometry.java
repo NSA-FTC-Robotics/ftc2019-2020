@@ -24,7 +24,8 @@ public class TestOdometry extends OdometryAutonomous
 
         if (opModeIsActive())
         {
-       driveTo(72,72,0,0.8);
+       driveTo(72,72,0,1);
+       sleep(5000);
         }
 
 
